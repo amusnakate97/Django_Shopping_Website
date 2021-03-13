@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="POST" action="">
+    {% csrf_token %}
+
+<div class="card" style="width: 18rem;">
+  <img class="card-img-top" src="{{item.img.url}}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{item.name}}</h5>
+    <p class="card-text">{{item.brand}}.</p>
+      <p class="card-text">{{item.price}}.</p>
+      <input type="radio" id="small" name="size" value="small">
+<label for="small">S</label><br>
+<input type="radio" id="medium" name="size" value="medium">
+<label for="medium">M</label><br>
+<input type="radio" id="Large" name="size" value="large">
+<label for="Large">Other</label>
+      <label for="units">Quantity (between 1 and 5):</label>
+<input type="number" id="units" name="units" min="1" max="5">
+
+
+      <div class="d-flex justify-content-center mt-3 login_container">
+          <input class="btn login_btn" type="submit" value="Login">
+      </div>
+      <a href="{% url 'cart' %}" class="btn btn-danger">Return to cart</a>
+
+
+  </div>
+</div>
+
+</form>
+</body>
+</html>

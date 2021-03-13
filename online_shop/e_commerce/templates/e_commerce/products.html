@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Fashion Street</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'e-products' 'f' %}">Women</a></li>
+          <li><a href="{% url 'e-products' 'm' %}">Men</a></li>
+          <li><a href="#">Page 1-3</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Page 2</a></li>
+      <li><a href="#">Page 3</a></li>
+    </ul>
+  </div>
+</nav>
+<form action="/filter" id="brand" method="GET">
+    <p>Select a Brand:</p>
+
+    <select form="brand" name="brandSelect" id="brandSelect" required>
+        <option value=""></option>
+        <option value="vero moda">vero moda</option>
+        <option value="mango">mango</option>
+        <option value="ITALY">Italy</option>
+    </select>
+    <br>
+    <input class="button" type="submit" value="Apply">
+</form>
+
+<form method="POST" action="">
+    {% csrf_token %}
+
+{% for item in products %}
+
+    <div class="card">
+  <img class="card-img-top" src="{{item.img.url}}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{item.name}}</h5>
+    <p class="card-text">{{item.brand}}.</p>
+      <p class="card-text">{{item.price}}.</p>
+
+    <a href="{% url 'add' item.id  %}" class="btn btn-primary">Add to cart</a>
+</div>
+</div>
+{% endfor %}
+        <a href="{% url 'cart' %}" class="btn btn-primary">Go To cart</a>
+
+
+</form>
+</body>
+</html>
