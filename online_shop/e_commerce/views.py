@@ -6,6 +6,9 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import createUserForm
 from django.contrib import messages
 from .models import product,cartItem
+import datetime
+from django.forms.models import model_to_dict
+
 # Create your views here.
 def home(request):
     if request.method=='POST':
@@ -48,24 +51,35 @@ def showProducts(request,gender):
 
 def addToCart(request,id):
     item1=product.objects.filter(id=id)
-    item=cartItem(user_id=request.user.username,id=id,name=item1[0].name,brand=item1[0].brand,price=item1[0].price,size=item1[0].size,img=item1[0].img,units=1)
+    item=cartItem(removed=False,ordered=True,user_id=request.user.username,id=id,name=item1[0].name,brand=item1[0].brand,price=item1[0].price,size=item1[0].size,img=item1[0].img,units=1)
     item.save()
     products = product.objects.filter(gender=item1[0].gender)
     return render(request, 'e_commerce/products.html', {'products': products})
 
 
 def showCart(request):
+    not_empty=False
     current_user = request.user
-    cartItems=cartItem.objects.filter(user_id=current_user.username)
-    return render(request, 'e_commerce/cart.html', {'products':cartItems})
+    cartItems=cartItem.objects.filter(user_id=current_user.username).filter(ordered=True,removed=False)
+    count=cartItems.count()
+    if count>0:
+        not_empty=True
+    return render(request, 'e_commerce/cart.html', {'products':cartItems,'empty':not_empty})
 
 def deleteItemFromCart(request,id):
+    not_empty=False
+
     if request.method=='GET':
         print(id)
-        item = cartItem.objects.filter(id=id)
-        item.delete()
-        cartItems = cartItem.objects.filter(user_id=request.user.username)
-    return render(request, 'e_commerce/cart.html', {'products':cartItems})
+        item = cartItem.objects.filter(id=id)[0]
+        item.removed=True
+        item.ordered=False
+        item.save()
+        cartItems = cartItem.objects.filter(user_id=request.user.username,removed=False)
+    count=cartItems.count()
+    if count>0:
+        not_empty=True
+    return render(request, 'e_commerce/cart.html', {'products':cartItems,'empty':not_empty})
 
 def updateItemFromCart(request,id):
     item = cartItem.objects.filter(id=id)
@@ -82,12 +96,33 @@ def updateItemFromCart(request,id):
 
 def generateBill(request):
     total=0
+    type_list=[]
     current_user = request.user
-    cartItems = cartItem.objects.filter(user_id=current_user.username)
+    orderedItems = cartItem.objects.filter(user_id=current_user.username).filter(ordered=True, removed=False)
+    #types=orderedItems.objects.values_list('name', flat=True)
+    types=['top','jacket','shrug','jeans']
+    for item in orderedItems:
+        for type in types:
+            if type in item.name.lower():
+                type_list.append(type)
+                break
+    unique_types=list(set(type_list))
+    type_freq_list={x:type_list.count(x) for x in unique_types}
+    max_type = max(type_freq_list, key=type_freq_list.get)
+    rec_products=product.objects.filter(name__contains=max_type)
+    order_ids=[item.id for item in orderedItems]
+    rec_ids=[item.id for item in rec_products]
+    print(order_ids)
+    print(rec_ids)
+    to_rec=set(rec_ids)-set(order_ids)
+    print(to_rec)
+    rec_products=product.objects.filter(name__contains=max_type,id__in=to_rec)
+    print(rec_products)
+    cartItems = cartItem.objects.filter(user_id=current_user.username).filter(ordered=True,removed=False)
     for item in cartItems:
         total=total+item.price*item.units
 
-    return render(request, 'e_commerce/Bill.html', {'items': cartItems,'total_amount':total})
+    return render(request, 'e_commerce/Bill.html', {'items': cartItems,'total_amount':total,'rec':rec_products})
 
 def filter(request):
     if request.method=='GET':
@@ -96,6 +131,25 @@ def filter(request):
         print(products[0])
     return render(request, 'e_commerce/products.html', {'products': products})
 
+def savePastOrder(request):
+    current_user = request.user
+    cartItems = cartItem.objects.filter(user_id=current_user.username)
+    for item in cartItems:
+        item.ordered=True
+        item.save()
+    #cartItem.objects.filter(user_id=current_user.username).delete()
+    return render(request, 'e_commerce/confirm.html')
+
+def OrderReview(request):
+    current_user = request.user
+    orderedItems = cartItem.objects.filter(user_id=current_user.username).filter(ordered=True,removed=False)
+    return render(request, 'e_commerce/review.html', {'products': orderedItems})
+
+def recommendProducts(request):
+    current_user = request.user
+    orderedItems = cartItem.objects.filter(user_id=current_user.username).filter(ordered=True, removed=False)
+    types=orderedItems.objects.values_list('name', flat=True)
+    print(types)
 
 
 

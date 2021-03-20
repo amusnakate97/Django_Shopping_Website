@@ -14,6 +14,9 @@ url(r'^shop/delete/(?P<id>\d+)/$',views.deleteItemFromCart,name='remove'),
 url(r'^shop/update/(?P<id>\d+)/$',views.updateItemFromCart,name='update'),
 path('bill/', views.generateBill,name='bill'),
 path('filter/', views.filter, name='filter'),
+path('saveHistory/', views.savePastOrder, name='savePastOrders'),
+path('reviewOrder/', views.OrderReview, name='review'),
+
 
 
 #url(r'^shop/update/(?P<id>\d+)/$',views.updateItemFromCart,name='update'),
