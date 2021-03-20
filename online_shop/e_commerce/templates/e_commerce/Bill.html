@@ -57,7 +57,31 @@
 
 </table>
      <b>Total Bill:</b> <p class="card-text">{{total_amount}}.</p>
+<br><br>
+<a href="{% url 'savePastOrders' %}" class="btn btn-primary">Confirm Order</a>
+<br>
+<br>
+<h4>Items you may like!!</h4>
+<div class="container">
 
+<div class="row content">
+  {% for item in rec %}
+  <div class="column">
+    <div class="card">
+        <div class="card-body">
+
+  <img class="card-img-top" src="{{item.img.url}}" alt="Card image cap" width="50",height="50">
+    <h5 class="card-title">{{item.name}}</h5>
+    <p class="card-text">{{item.brand}}.</p>
+      <p class="card-text">{{item.price}}.</p>
+    </div>
+  </div>
+  </div>
+
+    {% endfor %}
+</div>
+
+</div>
 
 </body>
 </html>

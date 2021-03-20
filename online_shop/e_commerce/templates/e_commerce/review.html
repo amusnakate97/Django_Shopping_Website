@@ -46,20 +46,13 @@
     <p class="card-text">{{item.brand}}.</p>
       <p class="card-text">{{item.price}}.</p>
 
-      <a href="{% url 'remove' item.id %}" class="btn btn-danger">Remove</a>
-      <a href="{% url 'update' item.id %}" class="btn btn-warning">Update</a>
 
 
   </div>
 </div>
 {% endfor %}
       <br>
-  {% if empty %}
-
-      <a href="{% url 'bill'  %}" class="btn btn-success">Place Order</a>
-  {% else %}
-     <img src="{% static 'e_commerce/empty_cart.png' %}" alt="My image">
-  {% endif %}
+      <a href="#" class="btn btn-success">Track Order</a>
 
 </form>
 </body>

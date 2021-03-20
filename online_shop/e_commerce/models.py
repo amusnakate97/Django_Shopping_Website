@@ -26,5 +26,6 @@ class cartItem(models.Model):
     size = models.CharField(choices=sizes, max_length=20, default=sizes[0][0])
     img = models.ImageField(null=True)
     units=models.SmallIntegerField()
-
+    ordered=models.BooleanField(default=False)
+    removed=models.BooleanField(default=False)
 
