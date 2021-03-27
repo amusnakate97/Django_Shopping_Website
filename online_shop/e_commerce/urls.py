@@ -16,7 +16,7 @@ path('bill/', views.generateBill,name='bill'),
 path('filter/', views.filter, name='filter'),
 path('saveHistory/', views.savePastOrder, name='savePastOrders'),
 path('reviewOrder/', views.OrderReview, name='review'),
-
+path('profile/', views.profileSetUp,name="profile"),
 
 
 #url(r'^shop/update/(?P<id>\d+)/$',views.updateItemFromCart,name='update'),

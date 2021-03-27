@@ -8,7 +8,7 @@ from django.contrib import messages
 from .models import product,cartItem
 import datetime
 from django.forms.models import model_to_dict
-
+from .forms import *
 # Create your views here.
 def home(request):
     if request.method=='POST':
@@ -137,8 +137,9 @@ def savePastOrder(request):
     for item in cartItems:
         item.ordered=True
         item.save()
-    #cartItem.objects.filter(user_id=current_user.username).delete()
-    return render(request, 'e_commerce/confirm.html')
+    address=Profile.objects.filter(user_id=current_user.username)[0].address
+    print(ProfileForm)
+    return render(request, 'e_commerce/confirm.html',{'address':address})
 
 def OrderReview(request):
     current_user = request.user
@@ -150,6 +151,23 @@ def recommendProducts(request):
     orderedItems = cartItem.objects.filter(user_id=current_user.username).filter(ordered=True, removed=False)
     types=orderedItems.objects.values_list('name', flat=True)
     print(types)
+
+def profileSetUp(request):
+    """Process images uploaded by users"""
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+
+            form.save()
+            profile=Profile(user_id="xyz",address=request.POST['address'],image=request.FILES['image'])
+            profile.save()
+            # Get the current instance object to display in the template
+            img_obj = form.instance
+            return render(request, 'e_commerce/profile.html', {'form': form, 'img_obj': img_obj})
+    else:
+        form = ProfileForm()
+    return render(request, 'e_commerce/profile.html', {'form': form})
+
 
 
 
