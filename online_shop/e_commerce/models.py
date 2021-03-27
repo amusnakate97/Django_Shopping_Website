@@ -29,3 +29,7 @@ class cartItem(models.Model):
     ordered=models.BooleanField(default=False)
     removed=models.BooleanField(default=False)
 
+class Profile(models.Model):
+    user_id=models.CharField(max_length=200, null=True)
+    image = models.ImageField(upload_to='images')
+    address=models.CharField(max_length=2000, null=True)
