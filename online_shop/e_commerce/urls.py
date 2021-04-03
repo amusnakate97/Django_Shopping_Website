@@ -17,6 +17,8 @@ path('filter/', views.filter, name='filter'),
 path('saveHistory/', views.savePastOrder, name='savePastOrders'),
 path('reviewOrder/', views.OrderReview, name='review'),
 path('profile/', views.profileSetUp,name="profile"),
+path('^shop/get_review/(?P<id>\d+)/$', views.productReview,name="get_review"),
+path('^shop/get_details/(?P<id>\d+)/$', views.productDetails,name="get_details"),
 
 
 #url(r'^shop/update/(?P<id>\d+)/$',views.updateItemFromCart,name='update'),

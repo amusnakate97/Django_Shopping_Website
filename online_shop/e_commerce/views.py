@@ -5,10 +5,11 @@ from django.contrib.auth import login,logout,authenticate,login
 from django.contrib.auth.forms import UserCreationForm
 from .forms import createUserForm
 from django.contrib import messages
-from .models import product,cartItem
+from .models import product,cartItem,Review
 import datetime
 from django.forms.models import model_to_dict
 from .forms import *
+import random
 # Create your views here.
 def home(request):
     if request.method=='POST':
@@ -98,6 +99,7 @@ def generateBill(request):
     total=0
     type_list=[]
     current_user = request.user
+    cartItem.objects.filter(user_id=current_user.username).update(status='Ordered')
     orderedItems = cartItem.objects.filter(user_id=current_user.username).filter(ordered=True, removed=False)
     #types=orderedItems.objects.values_list('name', flat=True)
     types=['top','jacket','shrug','jeans']
@@ -159,7 +161,7 @@ def profileSetUp(request):
         if form.is_valid():
 
             form.save()
-            profile=Profile(user_id="xyz",address=request.POST['address'],image=request.FILES['image'])
+            profile=Profile(user_id=request.user.username,address=request.POST['address'],image=request.FILES['image'])
             profile.save()
             # Get the current instance object to display in the template
             img_obj = form.instance
@@ -167,6 +169,32 @@ def profileSetUp(request):
     else:
         form = ProfileForm()
     return render(request, 'e_commerce/profile.html', {'form': form})
+
+def productReview(request,id):
+
+    if request.method=='GET':
+        #id = request.GET['item_id']
+        items=list(request.GET.items())
+
+        print(type(items[1][0]))
+        for i in range(1,len(items)):
+            form = Review(item_id=int(items[i][0]), review=items[i][1], user_id=request.user.username, review_id=random.randint(0, 1000))
+            form.save()
+        #review=request.GET[str(id)]
+        #print(request)
+        #print(review)
+
+        #user_review=Review()
+    current_user = request.user
+    orderedItems = cartItem.objects.filter(user_id=current_user.username).filter(ordered=True, removed=False)
+    return render(request, 'e_commerce/review.html', {'products': orderedItems})
+
+def productDetails(request,id):
+    item=product.objects.filter(id=id)
+    reviews=Review.objects.filter(item_id=id)
+    return render(request, 'e_commerce/product_details.html', {'product': item[0],'reviews':reviews})
+
+
 
 
 
