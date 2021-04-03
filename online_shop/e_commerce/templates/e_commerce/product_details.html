@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div class="card">
+  <img class="card-img-top" src="{{product.img.url}}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{product.name}}</h5>
+    <p class="card-text">{{product.brand}}.</p>
+      <p class="card-text">{{product.price}}.</p>
+      {% for review in reviews %}
+      <p class="card-text">{{review.user_id}}.</p>
+
+      <p class="card-text">{{review.review}}.</p>
+      {% endfor %}
+
+</div>
+</div>
+
+</body>
+</html>

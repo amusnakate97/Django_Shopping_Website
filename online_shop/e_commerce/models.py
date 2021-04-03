@@ -17,6 +17,7 @@ class product(models.Model):
     img=models.ImageField(null=True)
     gender=models.CharField(max_length=200, null=True)
 
+
 class cartItem(models.Model):
     user_id=models.CharField(max_length=200, null=True)
     id = models.SmallIntegerField(primary_key=True)
@@ -28,8 +29,15 @@ class cartItem(models.Model):
     units=models.SmallIntegerField()
     ordered=models.BooleanField(default=False)
     removed=models.BooleanField(default=False)
+    status=models.CharField(max_length=200, null=True)
 
 class Profile(models.Model):
     user_id=models.CharField(max_length=200, null=True)
     image = models.ImageField(upload_to='images')
     address=models.CharField(max_length=2000, null=True)
+
+class Review(models.Model):
+    review_id=models.SmallIntegerField(primary_key=True)
+    review = models.CharField(max_length=200, null=True)
+    item_id=models.SmallIntegerField()
+    user_id=models.CharField(max_length=200, null=True)
